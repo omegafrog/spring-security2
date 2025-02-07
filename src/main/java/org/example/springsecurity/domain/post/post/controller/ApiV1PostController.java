@@ -61,7 +61,7 @@ public class ApiV1PostController {
                                       @RequestParam(name = "keyword", required = false) String keyword,
                                       @RequestParam(name = "keyword-type", required = false, defaultValue = "title") String keywordType) {
 
-        Member member = rq.getAuthenticatedActor();
+        Member member = rq.getActor();
 
         Page<Post> posts;
         if(keyword != null && keywordType.equals("title"))
@@ -86,7 +86,7 @@ public class ApiV1PostController {
                 .orElseThrow(() -> new ServiceException("404-1", "존재하지 않는 글입니다."));
 
         if (!post.isOpened()) {
-            Member member = rq.getAuthenticatedActor();
+            Member member = rq.getActor();
             post.canRead(member);
         }
 
@@ -100,7 +100,7 @@ public class ApiV1PostController {
     @DeleteMapping("/{id}")
     public RsData<Void> delete(@PathVariable long id) {
 
-        Member actor = rq.getAuthenticatedActor();
+        Member actor = rq.getActor();
         Post post = postService.getItem(id).get();
 
         post.canDelete(actor);
@@ -123,7 +123,7 @@ public class ApiV1PostController {
     public RsData<PostWithContentDto> modify(@PathVariable long id, @RequestBody @Valid ModifyReqBody body
     ) {
 
-        Member actor = rq.getAuthenticatedActor();
+        Member actor = rq.getActor();
         Post post = postService.getItem(id).get();
 
         if (post.getAuthor().getId() != actor.getId()) {

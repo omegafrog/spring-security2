@@ -199,7 +199,7 @@ public class ApiV1PostControllerTest {
     @Test
     @DisplayName("단건 조회 - 없는 글 조회")
     void getPost2() throws Exception {
-        Long id = -1L;
+        Long id = 9999L;
 
         ResultActions resultActions = mvc.perform(
                 get("/api/v1/posts/%d".formatted(id))
@@ -280,10 +280,8 @@ public class ApiV1PostControllerTest {
         ResultActions perform = writePost(title, content, apiKey);
         perform
                 .andExpect(status().isUnauthorized())
-                .andExpect(handler().handlerType(ApiV1PostController.class))
-                .andExpect(handler().methodName("write"))
                 .andExpect(jsonPath("$.code").value("401-1"))
-                .andExpect(jsonPath("$.msg").value("잘못된 인증 정보입니다."));
+                .andExpect(jsonPath("$.msg").value("인증이 필요합니다."));
     }
 
     @Test
@@ -350,10 +348,8 @@ public class ApiV1PostControllerTest {
         ResultActions perform = modifyPost(postId, title, content, true, true, apiKey);
         perform
                 .andExpect(status().isUnauthorized())
-                .andExpect(handler().handlerType(ApiV1PostController.class))
-                .andExpect(handler().methodName("modify"))
                 .andExpect(jsonPath("$.code").value("401-1"))
-                .andExpect(jsonPath("$.msg").value("잘못된 인증 정보입니다."));
+                .andExpect(jsonPath("$.msg").value("인증이 필요합니다."));
     }
 
     @Test
@@ -434,10 +430,8 @@ public class ApiV1PostControllerTest {
         ResultActions resultActions = deletePost(postId, apiKey);
         resultActions
                 .andExpect(status().isUnauthorized())
-                .andExpect(handler().handlerType(ApiV1PostController.class))
-                .andExpect(handler().methodName("delete"))
                 .andExpect(jsonPath("$.code").value("401-1"))
-                .andExpect(jsonPath("$.msg").value("잘못된 인증 정보입니다."));
+                .andExpect(jsonPath("$.msg").value("인증이 필요합니다."));
     }
 
     @Test

@@ -54,7 +54,7 @@ public class ApiV1CommentController {
     @PostMapping
     @Transactional
     public RsData<CommentDto> write(@PathVariable long postId, @RequestBody WriteReqBody reqBody) {
-        Member actor = rq.getAuthenticatedActor();
+        Member actor = rq.getActor();
         Comment comment = _write(postId, actor, reqBody.content());
 
         postService.flush();
@@ -73,7 +73,7 @@ public class ApiV1CommentController {
     @Transactional
     public RsData<Void> modify(@PathVariable long postId, @PathVariable long id, @RequestBody ModifyReqBody reqBody) {
 
-        Member actor = rq.getAuthenticatedActor();
+        Member actor = rq.getActor();
 
         Post post = postService.getItem(postId).orElseThrow(
                 () -> new ServiceException("404-1", "존재하지 않는 게시글입니다.")
@@ -95,7 +95,7 @@ public class ApiV1CommentController {
     @Transactional
     public RsData<Void> delete(@PathVariable long postId, @PathVariable long id) {
 
-        Member actor = rq.getAuthenticatedActor();
+        Member actor = rq.getActor();
         Post post = postService.getItem(postId).orElseThrow(
                 () -> new ServiceException("404-1", "존재하지 않는 게시글입니다.")
         );

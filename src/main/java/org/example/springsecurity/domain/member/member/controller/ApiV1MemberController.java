@@ -53,7 +53,7 @@ public class ApiV1MemberController {
     @GetMapping("/me")
     public RsData<MemberDto> me() {
 
-        Member member = rq.getAuthenticatedActor();
+        Member member = rq.getActor();
 
         return new RsData<>("200-1", "유저 정보 조회 성공", new MemberDto(member));
     }
