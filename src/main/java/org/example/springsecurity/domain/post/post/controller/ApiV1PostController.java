@@ -1,6 +1,7 @@
 package org.example.springsecurity.domain.post.post.controller;
 
 import org.example.springsecurity.domain.member.member.entity.Member;
+import org.example.springsecurity.domain.member.member.service.MemberService;
 import org.example.springsecurity.domain.post.post.dto.PageDto;
 import org.example.springsecurity.domain.post.post.dto.PostWithContentDto;
 import org.example.springsecurity.domain.post.post.entity.Post;
@@ -13,7 +14,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.Optional;
 
 
 @RestController
@@ -23,6 +29,7 @@ public class ApiV1PostController {
 
     private final PostService postService;
     private final Rq rq;
+    private final MemberService memberService;
 
 
     @GetMapping
@@ -141,7 +148,10 @@ public class ApiV1PostController {
     @PostMapping
     public RsData<PostWithContentDto> write(@RequestBody @Valid WriteReqBody body) {
 
-        Member actor = rq.getAuthenticatedActor();
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+
+        Member actor = memberService.findByUsername(principal.getName()).get();
+
         Post post = postService.write(actor, body.title(), body.content(), body.opened, body.listed);
 
         return new RsData<>(
