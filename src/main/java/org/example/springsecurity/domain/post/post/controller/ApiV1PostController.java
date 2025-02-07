@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -146,11 +148,10 @@ public class ApiV1PostController {
     }
 
     @PostMapping
-    public RsData<PostWithContentDto> write(@RequestBody @Valid WriteReqBody body) {
+    public RsData<PostWithContentDto> write(@RequestBody @Valid WriteReqBody body,
+                                            @AuthenticationPrincipal UserDetails principal) {
 
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-
-        Member actor = memberService.findByUsername(principal.getName()).get();
+        Member actor = memberService.findByUsername(principal.getUsername()).get();
 
         Post post = postService.write(actor, body.title(), body.content(), body.opened, body.listed);
 

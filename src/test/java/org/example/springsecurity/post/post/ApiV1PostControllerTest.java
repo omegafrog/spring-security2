@@ -253,7 +253,6 @@ public class ApiV1PostControllerTest {
 
     @Test
     @DisplayName("글 작성")
-    @WithUserDetails("user1")
     void writePost() throws Exception {
         String title = "title";
         String content = "content";

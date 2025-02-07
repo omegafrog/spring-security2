@@ -1,5 +1,7 @@
 package org.example.springsecurity.global.app;
 
+import org.example.springsecurity.domain.member.member.service.MemberService;
+import org.example.springsecurity.global.Rq;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -16,7 +18,7 @@ import org.springframework.security.web.header.writers.frameoptions.XFrameOption
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, MemberService memberService, Rq rq) throws Exception {
         http
                 .authorizeHttpRequests(
                         req -> req
@@ -27,7 +29,7 @@ public class SecurityConfig {
                                 .permitAll()
                                 .anyRequest().authenticated()
                 )
-                .addFilterBefore(new CustomAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new CustomAuthenticationFilter(rq, memberService), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers ->
                         headers.addHeaderWriter(new XFrameOptionsHeaderWriter(
